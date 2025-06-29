@@ -13,7 +13,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
-import { REGISTER_MUTATION } from "../../graphql/auth";
+import { REGISTER_MUTATION } from "../../graphql/auth/auth2";
 import { useSession } from "next-auth/react";
 import getApolloClient from "../../lib/apolloClient";
 

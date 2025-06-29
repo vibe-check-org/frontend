@@ -7,6 +7,7 @@ export const GET_DASHBOARD_DATA = gql`
       titel
       beschreibung
     }
+    
     meinScore {
       kategorie
       wert

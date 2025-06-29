@@ -5,10 +5,10 @@ import KeycloakProvider, {
   KeycloakProfile,
 } from 'next-auth/providers/keycloak';
 import { OAuthConfig } from 'next-auth/providers/oauth';
-import { LOGIN, REFRESH_TOKEN } from '../graphql/auth/auth';
 import getApolloClient from './apolloClient';
 import { ENV, KEYCLOAK_ENV } from '../utils/env';
 import { getLogger } from '../utils/logger';
+import { LOGIN, REFRESH_TOKEN } from '../graphql/auth/auth';
 import { GraphQLErrorEntry } from '../error/error';
 
 const logger = getLogger('authOptions');
@@ -47,6 +47,8 @@ export const authOptions: AuthOptions = {
           password: '',
         };
         try {
+          console.log('token: ' + username + ' ' + password);
+          logger.debug('Credentials: ', credentials);
           const { data } = await client.mutate({
             mutation: LOGIN,
             variables: { username, password },
