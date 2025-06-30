@@ -14,8 +14,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { REGISTER_MUTATION } from "../../graphql/auth/auth2";
-import { useSession } from "next-auth/react";
 import getApolloClient from "../../lib/apolloClient";
+
+interface Data {
+  vorname: string;
+  nachname: string;
+  email: string;
+  password: string;
+}
 
 const schema = z.object({
   vorname: z.string().min(1, "Vorname ist erforderlich"),
@@ -37,7 +43,7 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Data) => {
     try {
       await registerUser({ variables: { input: data } });
       router.push("/login");

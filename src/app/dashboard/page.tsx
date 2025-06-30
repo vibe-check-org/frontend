@@ -12,10 +12,24 @@ import {
   useTheme,
 } from "@mui/material";
 import Link from "next/link";
+import getApolloClient from "../../lib/apolloClient";
+
+export interface Score {
+  kategorie: string;
+  wert: number;
+}
+
+export interface Bogen {
+  id: string;
+  titel: string;
+  beschreibung: string;
+}
 
 export default function DashboardPage() {
   const theme = useTheme();
-  const { data, loading, error } = useQuery(GET_DASHBOARD_DATA);
+  // const { data: session } = useSession();
+  const client = getApolloClient("");
+  const { data, loading, error } = useQuery(GET_DASHBOARD_DATA, { client });
 
   if (loading)
     return <CircularProgress sx={{ mt: 4, display: "block", mx: "auto" }} />;
@@ -41,7 +55,7 @@ export default function DashboardPage() {
         >
           Dein aktueller VibeScore
         </Typography>
-        {data.meinScore.map((score: any, index: number) => (
+        {data.meinScore.map((score: Score, index: number) => (
           <Paper
             key={index}
             sx={{
@@ -68,8 +82,8 @@ export default function DashboardPage() {
           Verfügbare Fragebögen
         </Typography>
         <Grid container spacing={2}>
-          {data.frageboegen.map((bogen: any) => (
-            <Grid item xs={12} sm={6} key={bogen.id}>
+          {data.frageboegen.map((bogen: Bogen) => (
+            <Grid sx={{ xs: 12, sm: 6 }} key={bogen.id}>
               <Paper sx={{ p: 2 }}>
                 <Typography variant="subtitle1" fontWeight="bold">
                   {bogen.titel}

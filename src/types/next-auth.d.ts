@@ -17,10 +17,10 @@ declare module 'next-auth' {
       username?: string; // Benutzername des Benutzers
       roles?: string[]; // Benutzerrollen (z. B. "Admin", "User")
 
-      colorScheme: OmnixysColorScheme;
-      language: string;
-      colorMode: PaletteMode;
-      compactLayout: boolean;
+      colorScheme?: OmnixysColorScheme;
+      language?: string;
+      colorMode?: PaletteMode;
+      compactLayout?: boolean;
     } & DefaultSession['user']; // Enthält alle Felder aus der Standard-User-Definition von `next-auth`
     role?: string; // Benutzerrolle (z. B. "Admin", "User")
   }

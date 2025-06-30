@@ -14,9 +14,6 @@ import {
   useTheme,
   CircularProgress,
   Theme,
-  Tabs,
-  Tab,
-  useMediaQuery,
 } from "@mui/material";
 import {
   AccountCircle,
@@ -176,8 +173,6 @@ export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [tabIndex, setTabIndex] = useState(0);
 
   /**
      * Handler für den klassischen Anmelde-Submit (E-Mail/Passwort).
@@ -264,17 +259,6 @@ export default function LoginPage() {
               </Typography>
             </Box>
 
-            <Tabs
-              value={tabIndex}
-              onChange={(_, val) => setTabIndex(val)}
-              variant="fullWidth"
-              sx={{ mb: 2 }}
-            >
-              <Tab label="Login" />
-              <Tab label="Mit Anbieter anmelden" />
-            </Tabs>
-
-            {tabIndex === 0 && (
               <Box>
                 <form onSubmit={handleCredentialsSubmit}>
                   <CustomUsernameField theme={theme} />
@@ -299,13 +283,9 @@ export default function LoginPage() {
                   <ForgotPasswordLink theme={theme} />
                 </Box>
               </Box>
-            )}
           </Paper>
 
           {/* Rechte Spalte: Login via Provider */}
-
-          {tabIndex === 1 && (
-            <Box>
               <Paper
                 elevation={8}
                 sx={{
@@ -354,8 +334,6 @@ export default function LoginPage() {
                     </Button>
                   ))}
               </Paper>
-            </Box>
-          )}
         </Box>
       </Box>
     </AppProvider>

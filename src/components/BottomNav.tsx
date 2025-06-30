@@ -18,6 +18,7 @@ export default function BottomNav() {
     else if (pathname.startsWith("/profil")) setValue(2);
   }, [pathname]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (_event: any, newValue: number) => {
     setValue(newValue);
     switch (newValue) {

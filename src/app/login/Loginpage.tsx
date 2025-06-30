@@ -100,7 +100,7 @@ const handleLogin = async (
       return {
         type: "CredentialsSignin",
         success: result.ok ? "Erfolgreich angemeldet" : undefined,
-        error: result.error,
+        error: result.error || 's',
       };
     }
 

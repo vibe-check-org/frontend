@@ -11,6 +11,7 @@ import {
   Typography,
   FormControl,
   InputLabel,
+  SelectChangeEvent,
 } from "@mui/material";
 
 import { useState } from "react";
@@ -27,7 +28,7 @@ interface Props {
 
 export default function SignupForm({ onNext }: Props) {
   // const { data: session } = useSession();
-  const client = getApolloClient('');
+  const client = getApolloClient("");
   const [createUser, { loading }] = useMutation(SIGN_UP, { client });
 
   const [form, setForm] = useState({
@@ -43,27 +44,34 @@ export default function SignupForm({ onNext }: Props) {
     adressen: [{ strasse: "", plz: "", ort: "", land: "Deutschland" }],
   });
 
-  const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<{ name?: string; value: unknown }>,
-    index?: number
+  // Für TextField, TextArea etc.
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
-    if (!name) return;
-
-    if (
-      ["strasse", "plz", "ort", "land"].includes(name) &&
-      index !== undefined
-    ) {
-      const updatedAdressen = [...form.adressen];
-      updatedAdressen[index] = { ...updatedAdressen[index], [name]: value };
-      setForm((prev) => ({ ...prev, adressen: updatedAdressen }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
+  
+
+  // Für Select
+  const handleSelectChange = (e: SelectChangeEvent) => {
+    const { name, value } = e.target;
+    if (!name) return;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleInputChangeWithIndex = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    index: number
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => {
+      const updated = [...prev.adressen];
+      updated[index] = { ...updated[index], [name]: value };
+      return { ...prev, adressen: updated };
+    });
+  };
+  
   
 
   const handleAddAdresse = () => {
@@ -106,6 +114,7 @@ export default function SignupForm({ onNext }: Props) {
         },
       });
       onNext();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       alert("Fehler bei der Registrierung: " + error.message);
     }
@@ -121,21 +130,21 @@ export default function SignupForm({ onNext }: Props) {
         label="Vorname"
         name="firstName"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.firstName}
       />
       <TextField
         label="Nachname"
         name="lastName"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.lastName}
       />
       <TextField
         label="Benutzername"
         name="username"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.username}
       />
       <TextField
@@ -143,7 +152,7 @@ export default function SignupForm({ onNext }: Props) {
         name="email"
         type="email"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.email}
       />
       <TextField
@@ -151,7 +160,7 @@ export default function SignupForm({ onNext }: Props) {
         name="geburtsdatum"
         type="date"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.geburtsdatum}
         InputLabelProps={{ shrink: true }}
       />
@@ -162,7 +171,7 @@ export default function SignupForm({ onNext }: Props) {
           name="rolle"
           value={form.rolle}
           label="Rolle"
-          onChange={handleChange}
+          onChange={handleSelectChange}
         >
           <MenuItem value="BEWERBER">Bewerber</MenuItem>
           <MenuItem value="RECRUITER">Recruiter</MenuItem>
@@ -185,28 +194,32 @@ export default function SignupForm({ onNext }: Props) {
             label="Straße"
             name="strasse"
             fullWidth
-            onChange={(e) => handleChange(e, index)}
+            onChange={(e) => handleInputChangeWithIndex(e, index)}
+
             value={adresse.strasse}
           />
           <TextField
             label="PLZ"
             name="plz"
             fullWidth
-            onChange={(e) => handleChange(e, index)}
+            onChange={(e) => handleInputChangeWithIndex(e, index)}
+
             value={adresse.plz}
           />
           <TextField
             label="Ort"
             name="ort"
             fullWidth
-            onChange={(e) => handleChange(e, index)}
+            onChange={(e) => handleInputChangeWithIndex(e, index)}
+
             value={adresse.ort}
           />
           <TextField
             label="Land"
             name="land"
             fullWidth
-            onChange={(e) => handleChange(e, index)}
+            onChange={(e) => handleInputChangeWithIndex(e, index)}
+
             value={adresse.land}
           />
           <Box display="flex" justifyContent="flex-end">
@@ -228,7 +241,7 @@ export default function SignupForm({ onNext }: Props) {
         name="password"
         type="password"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.password}
       />
       <TextField
@@ -236,7 +249,7 @@ export default function SignupForm({ onNext }: Props) {
         name="repeatPassword"
         type="password"
         fullWidth
-        onChange={handleChange}
+        onChange={handleInputChange}
         value={form.repeatPassword}
       />
 
