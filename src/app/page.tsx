@@ -42,7 +42,7 @@ export default function Startseite() {
               backgroundColor: "#bf7040",
             },
           }}
-          onClick={() => router.push("/register")}
+          onClick={() => router.push("/signup")}
         >
           Sign up
         </Button>

@@ -4,7 +4,7 @@
 import { ReactNode } from "react";
 import { ThemeProvider, CssBaseline, Container } from "@mui/material";
 import theme from "../theme/theme";
-import BottomNav from "../components/BottomNav";
+// import BottomNav from "../components/BottomNav";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <CssBaseline />
           <Container maxWidth="sm" disableGutters>
             <main>{children}</main>
-            <BottomNav />
+            {/* <BottomNav /> */}
           </Container>
         </ThemeProvider>
       </body>

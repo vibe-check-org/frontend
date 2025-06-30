@@ -26,5 +26,22 @@ export const REFRESH_TOKEN = gql`
   }
 `;
 
+export const SIGN_UP = gql`
+mutation CreateUser($input: CreateUserInput!) {
+    createUser(input: $input) {
+      id
+      vorname
+      nachname
+      email
+      geburtsdatum
+      profilbildUrl
+      rolle
+      erstelltAm
+      aktualisiertAm
+      name
+    }
+  }
+`;
+
 // console.error('Token refresh failed:', JSON.stringify(error, null, 2));
 // mutation RefreshToken($refreshToken: String!) {

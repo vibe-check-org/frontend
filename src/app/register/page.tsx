@@ -27,8 +27,8 @@ const schema = z.object({
 export default function RegisterPage() {
   const theme = useTheme();
   const router = useRouter();
-  const { data: session } = useSession();
-  const client = getApolloClient(session?.access_token);
+  // const { data: session } = useSession();
+  const client = getApolloClient("session?.access_token");
   const [registerUser, { loading }] = useMutation(REGISTER_MUTATION, {client});
 
   const {
