@@ -1,4 +1,4 @@
-'use client'; // This component will use client-side features like useState, useTheme, useRouter
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -14,18 +14,28 @@ import {
     RadioGroup,
     FormControlLabel,
     Radio,
-    SelectChangeEvent, // Import SelectChangeEvent
+    SelectChangeEvent,
+    TextField, // Importiere TextField für die Stadt-Eingabe
+    Slider, // Importiere Slider für den Umkreis
+    Checkbox, // Importiere Checkbox für "Standort verwenden"
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'; // Icon für den "Suche starten" Button
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 export default function SelectionPage() {
     const theme = useTheme();
     const router = useRouter();
-    const [selectedArea, setSelectedArea] = useState<string>(''); // Für das Dropdown
-    const [selectedSoftskill, setSelectedSoftskill] = useState<string>(''); // Für die Radio-Buttons
 
-    const handleAreaChange = (event: SelectChangeEvent<string>) => { // Use SelectChangeEvent
+    // Zustände für die bestehenden Felder
+    const [selectedArea, setSelectedArea] = useState<string>('');
+    const [selectedSoftskill, setSelectedSoftskill] = useState<string>('');
+
+    // Zustände für die neuen Standort-Felder
+    const [cityName, setCityName] = useState<string>(''); // Für die Stadt-Eingabe
+    const [useCurrentLocation, setUseCurrentLocation] = useState<boolean>(false); // Für "Standort verwenden"
+    const [radius, setRadius] = useState<number>(50); // Für den Umkreis-Schieberegler, Standardwert 50km
+
+    const handleAreaChange = (event: SelectChangeEvent<string>) => {
         setSelectedArea(event.target.value as string);
     };
 
@@ -33,17 +43,55 @@ export default function SelectionPage() {
         setSelectedSoftskill(event.target.value);
     };
 
-    const handleSearchStart = () => {
-        if (selectedArea && selectedSoftskill) {
-            // Navigiere zur Ergebnisseite mit Query-Parametern
-            router.push(`/results_hr?area=${selectedArea}&softskill=${selectedSoftskill}`);
-        } else {
-            alert('Bitte wählen Sie einen Aufgabenbereich und einen Softskill aus.');
+    const handleCityNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setCityName(event.target.value);
+    };
+
+    const handleUseCurrentLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setUseCurrentLocation(event.target.checked);
+        if (event.target.checked) {
+            setCityName(''); // Stadtname leeren, wenn Standort verwendet wird
+            // Hier würde normalerweise die Geolokalisierungs-API aufgerufen werden
+            // navigator.geolocation.getCurrentPosition(...)
+            // Fürs Erste ist es nur eine UI-Anzeige.
         }
     };
 
-    const availableAreas = ['IT', 'Sales']; // Beispielwerte
-    const softskills = ['Empathie', 'Entscheidungsfindung', 'Teamfähigkeit', 'Konfliktlösung'];
+    const handleRadiusChange = (event: Event, newValue: number | number[]) => {
+        setRadius(newValue as number);
+    };
+
+    const handleSearchStart = () => {
+        // Validierung: Mindestens Aufgabenbereich UND Softskill MÜSSEN ausgewählt sein.
+        // Für den Standort: entweder Stadtname ODER "Standort verwenden" MUSS ausgewählt sein.
+        if (!selectedArea || !selectedSoftskill) {
+            alert('Bitte wählen Sie einen Aufgabenbereich und einen Softskill aus.');
+            return;
+        }
+
+        if (!cityName && !useCurrentLocation) {
+            alert('Bitte geben Sie einen Städtenamen ein ODER aktivieren Sie "Standort verwenden".');
+            return;
+        }
+
+        // Baue die Query-Parameter zusammen
+        const queryParams = new URLSearchParams();
+        queryParams.append('area', selectedArea);
+        queryParams.append('softskill', selectedSoftskill);
+
+        if (useCurrentLocation) {
+            queryParams.append('location', 'current'); // Platzhalter für "aktueller Standort"
+            queryParams.append('radius', radius.toString());
+        } else if (cityName) {
+            queryParams.append('city', cityName);
+            queryParams.append('radius', radius.toString());
+        }
+
+        router.push(`/results_hr?${queryParams.toString()}`);
+    };
+
+    const availableAreas = ['IT', 'Sales']; // Beispielwerte erweitert
+    const softskills = ['Empathie', 'Entscheidungsfindung', 'Teamfähigkeit', 'Konfliktlösung', 'Kreativität']; // Beispielwerte erweitert
 
     return (
         <Box
@@ -56,7 +104,7 @@ export default function SelectionPage() {
                 p: 2,
             }}
         >
-            <Box sx={{ display: 'flex', width: '100%', maxWidth: 600 }}> {/* Angepasste Breite für diese Seite */}
+            <Box sx={{ display: 'flex', width: '100%', maxWidth: 600 }}>
                 <Paper elevation={8} sx={{ flex: 1, p: 4, borderRadius: 3, textAlign: 'center' }}>
                     <Typography variant="h5" sx={{ mb: 2, color: theme.palette.primary.main }}>
                         Mitarbeiter suchen
@@ -102,13 +150,62 @@ export default function SelectionPage() {
                         </RadioGroup>
                     </Box>
 
+                    {/* Neue Sektion für die örtliche Eingrenzung */}
+                    <Box sx={{ textAlign: 'left', mb: 4 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: theme.palette.text.secondary, mb: 2 }}>
+                            Örtliche Eingrenzung:
+                        </Typography>
+
+                        {/* Textfeld für Städtenamen */}
+                        <TextField
+                            fullWidth
+                            label="Städtenamen eingeben"
+                            variant="outlined"
+                            value={cityName}
+                            onChange={handleCityNameChange}
+                            sx={{ mb: 2 }}
+                            disabled={useCurrentLocation} // Deaktiviert, wenn "Standort verwenden" aktiv ist
+                        />
+
+                        {/* Checkbox "Standort verwenden" */}
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={useCurrentLocation}
+                                    onChange={handleUseCurrentLocationChange}
+                                    color="primary"
+                                />
+                            }
+                            label="Aktuellen Standort verwenden"
+                            sx={{ mb: 3 }}
+                        />
+
+                        {/* Schieberegler für Umkreis */}
+                        <Typography gutterBottom sx={{ color: theme.palette.text.secondary }}>
+                            Umkreis: {radius} km
+                        </Typography>
+                        <Slider
+                            value={radius}
+                            onChange={handleRadiusChange}
+                            aria-labelledby="radius-slider"
+                            valueLabelDisplay="auto"
+                            step={10}
+                            marks
+                            min={10}
+                            max={200}
+                            sx={{ mb: 3 }}
+                        />
+                    </Box>
+
                     {/* Suche starten Button */}
                     <Button
                         variant="contained"
                         fullWidth
                         endIcon={<ArrowForwardIcon />}
                         onClick={handleSearchStart}
-                        disabled={!selectedArea || !selectedSoftskill} // Deaktiviert, wenn nicht beides ausgewählt ist
+                        // Der Button ist deaktiviert, wenn Aufgabenbereich/Softskill nicht gewählt sind
+                        // ODER wenn KEIN Standort gewählt ist (weder Stadtname noch aktueller Standort)
+                        disabled={!selectedArea || !selectedSoftskill || (!cityName && !useCurrentLocation)}
                         sx={{
                             backgroundColor: theme.palette.primary.main,
                             color: theme.palette.background.default,
