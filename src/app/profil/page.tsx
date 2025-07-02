@@ -27,7 +27,7 @@ export default function Profil() {
       <Typography color="orange">Code-Status: Nicht eingelöst</Typography>
 
       <Box mt={4} display="flex" flexDirection="column" gap={2}>
-        <Button variant="contained" sx={btnStyle} onClick={() => router.push("/einleitung")}>
+        <Button variant="contained" sx={btnStyle} onClick={() => router.push("/test_einleitung")}>
           Test Starten →
         </Button>
         <Button variant="contained" sx={btnStyle}>
