@@ -199,9 +199,29 @@ export default function ResultsPage() {
                 ) : (
                     results.map((result, index) => (
                         <Paper key={index} elevation={4} sx={{ p: 3, mb: 2, borderRadius: 2, textAlign: 'left' }}>
-                            <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
-                                {result.email}
-                            </Typography>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                                    {result.email}
+                                </Typography>
+                                {/* Angepasster LinkedIn Button */}
+                                <Button
+                                    variant="contained"
+                                    color="primary" // Dies verwendet die primäre Farbe des Themes
+                                    size="small"
+                                    sx={{
+                                        backgroundColor: theme.palette.primary.main,
+                                        color: theme.palette.background.default,
+                                        borderRadius: 12, // Angepasst an den Stil des Speicher-Buttons
+                                        fontWeight: 600,
+                                        '&:hover': {
+                                            backgroundColor: theme.palette.secondary.main, // Angepasst an den Stil des Speicher-Buttons
+                                        },
+                                    }}
+                                    onClick={() => { /* Hier könnte eine Funktion für die LinkedIn-Weiterleitung stehen */ }}
+                                >
+                                    LinkedIn
+                                </Button>
+                            </Box>
                             {/* Hier wird der Stadtname angezeigt */}
                             {result.city && (
                                 <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mb: 1 }}>
