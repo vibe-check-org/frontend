@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // frontend/src/app/profil/bearbeiten/page.tsx
 'use client';
 
@@ -13,17 +12,16 @@ import {
     InputAdornment,
     IconButton,
 } from '@mui/material';
-// Icons entfernt: import LinkedInIcon from '@mui/icons-material/LinkedIn';
-// Icons entfernt: import LinkIcon from '@mui/icons-material/Link';
-// Icons entfernt: import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff } from '@mui/icons-material'; // Wichtig: Icons importieren
 import { useRouter } from 'next/navigation';
 
 export default function ProfilBearbeitenPage() {
-    const [showPassword, setShowPassword] = useState(false); // Beibehalten für Funktionalität, auch ohne Icon
+    const [showPassword, setShowPassword] = useState(false);
     const theme = useTheme();
     const router = useRouter();
 
     // Zustand für die einzelnen Felder initialisieren
+    // Diese Werte können später aus einer API oder einem Kontext geladen werden
     const [profilbild, setProfilbild] = useState('');
     const [name, setName] = useState('Max');
     const [nachname, setNachname] = useState('Mustermann');
@@ -32,27 +30,26 @@ export default function ProfilBearbeitenPage() {
     const [passwordRepeat, setPasswordRepeat] = useState('');
     const [geburtstag, setGeburtstag] = useState('');
     const [telefonnummer, setTelefonnummer] = useState('');
+    const [linkedinXing, setLinkedinXing] = useState('');
     const [wohnort, setWohnort] = useState('Berlin');
+    const [ueberMich, setUeberMich] = useState('Hallo, ich bin Max und interessiere mich für...');
+    const [interessen, setInteressen] = useState('Lesen, Sport, Reisen');
+    const [lebensmotto, setLebensmotto] = useState('Carpe Diem');
+
+    // Dummy-Werte für Felder, die eventuell von Backend kommen oder nicht editierbar sind
+    const [einmaligerCode, setEinmaligerCode] = useState('XYZ123ABC');
+    const [statusTest, setStatusTest] = useState('Bestanden');
+    const [datumTestabschluss, setDatumTestabschluss] = useState('2024-01-15');
+    const [softSkillsAuswertung, setSoftSkillsAuswertung] = useState('Teamfähigkeit: 90%, Empathie: 85%');
 
     const handleClickShowPassword = () => setShowPassword((prev) => !prev);
     const handleMouseDownPassword = (event: React.MouseEvent) => event.preventDefault();
 
-    const handleSaveChanges = (event: React.FormEvent) => {
-        event.preventDefault();
-        console.log('Profiländerungen speichern:', {
-            name,
-            nachname,
-            email,
-            password,
-            telefonnummer,
-            wohnort,
-        });
-        alert('Profiländerungen gespeichert!');
-        router.push('/profil');
-    };
-
-    const handleConnectLinkedIn = () => {
-        alert('Verbindung mit LinkedIn wird initiiert...');
+    const handleSave = () => {
+        // Hier würde die Logik zum Speichern der Daten implementiert
+        // z.B. API-Aufruf
+        alert('Profil gespeichert!');
+        router.push('/profil'); // Zurück zur Profilübersicht
     };
 
     return (
@@ -61,243 +58,367 @@ export default function ProfilBearbeitenPage() {
                 minHeight: '100vh',
                 backgroundColor: theme.palette.background.default,
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
                 p: 2,
             }}
         >
-            <Box sx={{ width: '100%', maxWidth: 500 }}>
-                <Paper elevation={8} sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
-                    <Typography variant="h5" sx={{ mb: 3, color: theme.palette.primary.main, fontWeight: 'bold' }}>
-                        Profil bearbeiten
-                    </Typography>
+            <Paper elevation={8} sx={{ p: 4, borderRadius: 3, maxWidth: 600, width: '100%', textAlign: 'left' }}>
+                <Typography variant="h6" fontWeight="bold" mb={3} color={theme.palette.primary.main}>
+                    Hallo {name} {nachname}
+                </Typography>
 
-                    <form onSubmit={handleSaveChanges}>
-                        <Box display="flex" flexDirection="column" gap={2}>
-                            <TextField
-                                fullWidth
-                                label="Profilbild (optional)"
-                                variant="outlined"
-                                size="small"
-                                value={profilbild}
-                                onChange={(e) => setProfilbild(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Vorname"
-                                variant="outlined"
-                                size="small"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Nachname"
-                                variant="outlined"
-                                size="small"
-                                value={nachname}
-                                onChange={(e) => setNachname(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="E-Mail"
-                                type="email"
-                                variant="outlined"
-                                size="small"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Passwort"
-                                type={showPassword ? 'text' : 'password'}
-                                variant="outlined"
-                                size="small"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            {/* Icons entfernt, daher nur ein einfacher Button */}
-                                            <Button
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                size="small"
-                                                sx={{ minWidth: 'unset', px: 1 }} // Kleinere Größe für den Adornment-Button
-                                            >
-                                                {showPassword ? 'Ausblenden' : 'Anzeigen'}
-                                            </Button>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Passwort Wiederholen"
-                                type={showPassword ? 'text' : 'password'}
-                                variant="outlined"
-                                size="small"
-                                value={passwordRepeat}
-                                onChange={(e) => setPasswordRepeat(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Geburtstag"
-                                type="date"
-                                variant="outlined"
-                                size="small"
-                                value={geburtstag}
-                                onChange={(e) => setGeburtstag(e.target.value)}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Telefonnummer"
-                                variant="outlined"
-                                size="small"
-                                value={telefonnummer}
-                                onChange={(e) => setTelefonnummer(e.target.value)}
-                            />
-                            <TextField
-                                fullWidth
-                                label="Wohnort"
-                                variant="outlined"
-                                size="small"
-                                value={wohnort}
-                                onChange={(e) => setWohnort(e.target.value)}
-                            />
-                        </Box>
-
-                        {/* Button für LinkedIn (ohne Icon) */}
-                        <Button
-                            variant="outlined"
-                            fullWidth
-                            onClick={handleConnectLinkedIn}
-                            sx={{
-                                mt: 3,
-                                color: theme.palette.info.main,
-                                borderColor: theme.palette.info.main,
-                                borderRadius: 12,
-                                fontWeight: 600,
-                                '&:hover': {
-                                    backgroundColor: theme.palette.info.light,
-                                    borderColor: theme.palette.info.dark,
+                <Box display="flex" flexDirection="column" gap={2}>
+                    {/* Profilbild */}
+                    <TextField
+                        label="Profilbild (optional)"
+                        variant="outlined"
+                        fullWidth
+                        value={profilbild}
+                        onChange={(e) => setProfilbild(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
                                 },
-                            }}
-                        >
-                            Mit LinkedIn verbinden
-                        </Button>
-
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            fullWidth
-                            sx={{
-                                mt: 2,
-                                backgroundColor: theme.palette.primary.main,
-                                color: theme.palette.background.default,
-                                borderRadius: 12,
-                                fontWeight: 600,
-                                '&:hover': {
-                                    backgroundColor: theme.palette.secondary.main,
-                                },
-                            }}
-                        >
-                            Änderungen speichern
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            fullWidth
-                            onClick={() => router.push('/profil')}
-                            sx={{
-                                mt: 2,
-                                color: theme.palette.primary.main,
-                                borderColor: theme.palette.primary.main,
-                                borderRadius: 12,
-                                fontWeight: 600,
-                                '&:hover': {
+                                '&:hover fieldset': {
                                     borderColor: theme.palette.secondary.main,
-                                    color: theme.palette.secondary.main,
                                 },
-                            }}
-                        >
-                            Abbrechen
-                        </Button>
-                    </form>
-                </Paper>
-            </Box>
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Name */}
+                    <TextField
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Nachname */}
+                    <TextField
+                        label="Nachname"
+                        variant="outlined"
+                        fullWidth
+                        value={nachname}
+                        onChange={(e) => setNachname(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* E-Mail */}
+                    <TextField
+                        label="E-Mail"
+                        variant="outlined"
+                        fullWidth
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        type="email"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Passwort */}
+                    <TextField
+                        label="Passwort"
+                        type={showPassword ? 'text' : 'password'}
+                        variant="outlined"
+                        fullWidth
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        InputProps={{
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                    >
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Passwort Wiederholen */}
+                    <TextField
+                        label="Passwort Wiederholen"
+                        type={showPassword ? 'text' : 'password'}
+                        variant="outlined"
+                        fullWidth
+                        value={passwordRepeat}
+                        onChange={(e) => setPasswordRepeat(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Geburtstag */}
+                    <TextField
+                        label="Geburtstag"
+                        type="date" // Datums-Input-Typ für bessere Benutzerfreundlichkeit
+                        variant="outlined"
+                        fullWidth
+                        value={geburtstag}
+                        onChange={(e) => setGeburtstag(e.target.value)}
+                        InputLabelProps={{
+                            shrink: true, // Label soll immer schrumpfen für Datum
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Telefonnummer */}
+                    <TextField
+                        label="Telefonnummer"
+                        variant="outlined"
+                        fullWidth
+                        value={telefonnummer}
+                        onChange={(e) => setTelefonnummer(e.target.value)}
+                        type="tel"
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* LinkedIn/Xing-Profil */}
+                    <TextField
+                        label="LinkedIn/Xing-Profil"
+                        variant="outlined"
+                        fullWidth
+                        value={linkedinXing}
+                        onChange={(e) => setLinkedinXing(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Wohnort */}
+                    <TextField
+                        label="Wohnort"
+                        variant="outlined"
+                        fullWidth
+                        value={wohnort}
+                        onChange={(e) => setWohnort(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Über-mich-Text */}
+                    <TextField
+                        label="Über-mich-Text"
+                        variant="outlined"
+                        fullWidth
+                        multiline
+                        rows={4} // Mehrere Zeilen für längeren Text
+                        value={ueberMich}
+                        onChange={(e) => setUeberMich(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Interessen */}
+                    <TextField
+                        label="Interessen"
+                        variant="outlined"
+                        fullWidth
+                        value={interessen}
+                        onChange={(e) => setInteressen(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+                    {/* Lebensmotto */}
+                    <TextField
+                        label="Lebensmotto"
+                        variant="outlined"
+                        fullWidth
+                        value={lebensmotto}
+                        onChange={(e) => setLebensmotto(e.target.value)}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: theme.palette.primary.main,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: theme.palette.secondary.main,
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: theme.palette.secondary.dark,
+                                },
+                            },
+                        }}
+                    />
+
+                    {/* Felder mit Dummy-Werten, die nicht direkt bearbeitet werden (können aber angezeigt werden) */}
+                    <TextField
+                        label="Einmaliger Code"
+                        variant="outlined"
+                        fullWidth
+                        value={einmaligerCode}
+                        InputProps={{ readOnly: true }} // Nicht editierbar
+                        sx={{ '& .MuiOutlinedInput-root fieldset': { borderColor: theme.palette.text.disabled } }}
+                    />
+                    <TextField
+                        label="Status Test"
+                        variant="outlined"
+                        fullWidth
+                        value={statusTest}
+                        InputProps={{ readOnly: true }} // Nicht editierbar
+                        sx={{ '& .MuiOutlinedInput-root fieldset': { borderColor: theme.palette.text.disabled } }}
+                    />
+                    <TextField
+                        label="Datum des Testabschlusses"
+                        variant="outlined"
+                        fullWidth
+                        value={datumTestabschluss}
+                        InputProps={{ readOnly: true }} // Nicht editierbar
+                        sx={{ '& .MuiOutlinedInput-root fieldset': { borderColor: theme.palette.text.disabled } }}
+                    />
+                    <TextField
+                        label="Soft-Skills-Auswertung"
+                        variant="outlined"
+                        fullWidth
+                        value={softSkillsAuswertung}
+                        InputProps={{ readOnly: true }} // Nicht editierbar
+                        sx={{ '& .MuiOutlinedInput-root fieldset': { borderColor: theme.palette.text.disabled } }}
+                    />
+                </Box>
+
+                <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleSave}
+                    sx={{
+                        mt: 4,
+                        bgcolor: theme.palette.primary.main,
+                        color: theme.palette.background.default,
+                        borderRadius: 10,
+                        '&:hover': {
+                            bgcolor: theme.palette.secondary.main,
+                        },
+                    }}
+                >
+                    Speichern →
+                </Button>
+            </Paper>
         </Box>
     );
-=======
-"use client";
-
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import { useState } from "react";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-
-export default function ProfilBearbeiten() {
-  const [showPassword, setShowPassword] = useState(false);
-
-  
-
-  return (
-    <Box p={4} bgcolor="#F9F4EF" minHeight="100vh">
-      <Typography variant="h6" fontWeight="bold" mb={3} color="#6A3C2C">
-        Hallo Herr Musterman
-      </Typography>
-
-      <Box display="flex" flexDirection="column" gap={2}>
-        <TextField label="Profilbild (optional)" variant="outlined" fullWidth />
-        <TextField label="Name" variant="outlined" fullWidth />
-        <TextField label="Nachname" variant="outlined" fullWidth />
-        <TextField label="e-mail" variant="outlined" fullWidth />
-        <TextField
-          label="Passwort"
-          type={showPassword ? "text" : "password"}
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          label="Passwort Wiederholen"
-          type={showPassword ? "text" : "password"}
-          variant="outlined"
-          fullWidth
-        />
-        <TextField label="Geburtstag" variant="outlined" fullWidth />
-        <TextField label="Einmaliger Code" variant="outlined" fullWidth />
-        <TextField label="Status Test" variant="outlined" fullWidth />
-        <TextField label="Datum des Testabschlusses" variant="outlined" fullWidth />
-        <TextField label="Soft-Skills-Auswertung" variant="outlined" fullWidth />
-        <TextField label="Telefonnummer" variant="outlined" fullWidth />
-        <TextField label="LinkedIn/Xing-Profil" variant="outlined" fullWidth />
-        <TextField label="Wohnort" variant="outlined" fullWidth />
-        <TextField label="Über-mich-Text" variant="outlined" fullWidth multiline />
-        <TextField label="Interessen" variant="outlined" fullWidth />
-        <TextField label="Lebensmotto" variant="outlined" fullWidth />
-      </Box>
-
-      <Button variant="contained" fullWidth sx={{ mt: 4, bgcolor: "#6A3C2C", borderRadius: 10 }}>
-        Weiter →
-      </Button>
-    </Box>
-  );
->>>>>>> d7ef237c185f70aa4c065d07845d52b67973db41
 }

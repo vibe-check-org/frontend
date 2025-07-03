@@ -15,7 +15,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 const dummyResults = [
     {
         email: 'email1@email.com',
-        city: 'Berlin', // <-- Hinzugefügt
+        city: 'Karlsruhe', // <-- Hinzugefügt
         skills: {
             Empathie: 80,
             Teamfähigkeit: 90,
@@ -25,7 +25,7 @@ const dummyResults = [
     },
     {
         email: 'email2@email.com',
-        city: 'München', // <-- Hinzugefügt
+        city: 'Rastatt', // <-- Hinzugefügt
         skills: {
             Empathie: 70,
             Teamfähigkeit: 85,
@@ -35,7 +35,7 @@ const dummyResults = [
     },
     {
         email: 'email3@email.com',
-        city: 'Hamburg', // <-- Hinzugefügt
+        city: 'Bad Herrenalb', // <-- Hinzugefügt
         skills: {
             Empathie: 95,
             Teamfähigkeit: 70,
@@ -45,7 +45,7 @@ const dummyResults = [
     },
     {
         email: 'email4@email.com',
-        city: 'Berlin', // <-- Hinzugefügt
+        city: 'Karlsruhe', // <-- Hinzugefügt
         skills: {
             Empathie: 85,
             Teamfähigkeit: 75,

@@ -91,7 +91,7 @@ export default function SelectionPage() {
     };
 
     const availableAreas = ['IT', 'Sales']; // Beispielwerte erweitert
-    const softskills = ['Empathie', 'Entscheidungsfindung', 'Teamfähigkeit', 'Konfliktlösung', 'Kreativität']; // Beispielwerte erweitert
+    const softskills = ['Empathie', 'Entscheidungsfindung', 'Teamfähigkeit', 'Konfliktlösung']; // Beispielwerte erweitert
 
     return (
         <Box
