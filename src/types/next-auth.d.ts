@@ -12,6 +12,7 @@ declare module 'next-auth' {
     refresh_token?: string; // Token zur Erneuerung des Zugriffstokens
     refresh_expires_in?: number; // Zeit in Sekunden bis zum Ablauf des Refresh-Tokens
     user: {
+      id?: string; // Eindeutige Benutzer-ID (z. B. von OpenID Connect)
       name?: string; // Name des Benutzers
       email?: string; // E-Mail-Adresse des Benutzers
       username?: string; // Benutzername des Benutzers

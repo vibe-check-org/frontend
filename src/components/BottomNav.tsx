@@ -6,6 +6,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import InsightsIcon from "@mui/icons-material/Insights";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { ENV } from "../utils/env";
+
+const { DEFAULT_ROUTE } = ENV;
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -15,7 +18,7 @@ export default function BottomNav() {
   useEffect(() => {
     if (pathname.startsWith("/dashboard")) setValue(0);
     else if (pathname.startsWith("/vibeprofil")) setValue(1);
-    else if (pathname.startsWith("/profil")) setValue(2);
+    else if (pathname.startsWith(DEFAULT_ROUTE)) setValue(2);
   }, [pathname]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,7 +32,7 @@ export default function BottomNav() {
         router.push("/vibeprofil");
         break;
       case 2:
-        router.push("/profil");
+        router.push(DEFAULT_ROUTE);
         break;
     }
   };

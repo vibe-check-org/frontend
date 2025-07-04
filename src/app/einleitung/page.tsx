@@ -3,6 +3,7 @@ import { Box, Button, Checkbox, FormControlLabel, Typography } from "@mui/materi
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+
 export default function Einleitung() {
   const [accepted, setAccepted] = useState(false);
   const router = useRouter();
@@ -14,11 +15,17 @@ export default function Einleitung() {
       </Typography>
 
       <Typography mt={2}>
-        Schön, dass du dir die Zeit nimmst, deine persönlichen Stärken besser kennenzulernen...
+        Schön, dass du dir die Zeit nimmst, deine persönlichen Stärken besser
+        kennenzulernen...
       </Typography>
 
       <FormControlLabel
-        control={<Checkbox checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />}
+        control={
+          <Checkbox
+            checked={accepted}
+            onChange={(e) => setAccepted(e.target.checked)}
+          />
+        }
         label="Ich akzeptiere die Datenschutzrichtlinie und Nutzungsbedingungen."
         sx={{ mt: 4 }}
       />
@@ -28,7 +35,7 @@ export default function Einleitung() {
         fullWidth
         disabled={!accepted}
         sx={{ mt: 2, borderRadius: 8, bgcolor: "#6A3C2C" }}
-        onClick={() => router.push("/profil")}
+        onClick={() => router.push("/test/start")}
       >
         Test Starten
       </Button>

@@ -91,6 +91,7 @@ export const authOptions: AuthOptions = {
           refresh_expires_in: user.refresh_expires_in + nowTimeStamp,
           refresh_token: user.refresh_token,
           user: {
+            id: userData?.sub || user.id,
             name: userData?.name || user.name,
             email: userData?.email || user.email,
             username: userData?.preferred_username || user.username,
@@ -203,7 +204,7 @@ export const authOptions: AuthOptions = {
      * Ergänzt die Session-Daten um Benutzer- und Token-Informationen.
      */
     async session({ session, token }) {
-      logger.debug('Session Token: %o', token);
+      // logger.debug('Session Token: %o', token);
 
       session.user = token.user || {
         name: token.name as string,
@@ -249,6 +250,7 @@ export const authOptions: AuthOptions = {
 const logPayload = (
   access_token: string,
 ): {
+  sub?: string;
   name?: string;
   preferred_username?: string;
   given_name?: string;
@@ -270,6 +272,7 @@ const logPayload = (
     const payload = JSON.parse(payloadDecoded);
 
     const {
+      sub,
       name,
       preferred_username,
       given_name,
@@ -280,7 +283,8 @@ const logPayload = (
 
     const roles = realm_access?.roles || [];
     logger.debug(
-      'logPayload: name=%s, preferred_username=%s, given_name=%s, family_name=%s, email=%s',
+      'logPayload: id=%s, name=%s, preferred_username=%s, given_name=%s, family_name=%s, email=%s',
+      sub,
       name,
       preferred_username,
       given_name,
@@ -290,7 +294,7 @@ const logPayload = (
 
     logger.debug('logPayload: Rollen: %o', roles);
 
-    return { name, preferred_username, given_name, family_name, email, roles };
+    return { sub, name, preferred_username, given_name, family_name, email, roles };
   } catch (error) {
     logger.error('Fehler beim Decodieren des Access-Tokens:', error);
     return null;

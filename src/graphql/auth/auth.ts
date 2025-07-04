@@ -19,9 +19,6 @@ export const REFRESH_TOKEN = gql`
       expires_in
       refresh_token
       refresh_expires_in
-      roles
-      id_token
-      scope
     }
   }
 `;

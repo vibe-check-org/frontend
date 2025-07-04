@@ -11,7 +11,7 @@ import {
   Button,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import {
   AuthProvider,
@@ -131,15 +131,29 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     const formData = new FormData(e.currentTarget);
     const provider = providers.find((p) => p.id === "credentials")!;
     const result = await handleLogin(provider, formData);
-    setLoading(false);
-    if (result.success) router.push(DEFAULT_ROUTE);
-    else
+
+    if (result.success) {
+      const session = await getSession();
+      console.log("Session:", session);
+      const userId = session?.user?.id;
+      console.log("User ID from session:", userId);
+
+      if (userId) {
+        router.push(`${DEFAULT_ROUTE}/${userId}`);
+      } else {
+        setError("Benutzer-ID konnte nicht aus dem Token gelesen werden.");
+      }
+    } else {
       setError(
         result.error || "Ungültige Anmeldedaten. Bitte erneut versuchen."
       );
+    }
+    
+    setLoading(false);
   };
 
   return (
