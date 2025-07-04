@@ -90,7 +90,7 @@ export default function Profil() {
         {user.vorname} {user.nachname}
       </Typography>
       <Typography color={user.profile ? "green" : "orange"} mt={1}>
-        Teststatus: {user.profile ? "Abgeschlossen" : "Offen"}
+        Teststatus: {user.profile ? "Offen" : "Offen"}
       </Typography>
       <Typography color="orange">Code-Status: Nicht eingelöst</Typography>
 
@@ -98,7 +98,7 @@ export default function Profil() {
         <Button
           variant="contained"
           sx={btnStyle}
-          onClick={() => router.push(`/test_einleitung`)}
+          onClick={() => router.push(`/einleitung`)}
         >
           Test Starten →
         </Button>

@@ -46,8 +46,8 @@ export default function Profil() {
                     }}
                 />
 
-                <Typography fontWeight="bold" color={theme.palette.text.primary}>Max Musterman</Typography>
-                <Typography color={theme.palette.warning.main} mt={1}>Teststatus: Offen</Typography> {/* Farbe angepasst */}
+                <Typography fontWeight="bold" color={theme.palette.text.primary}>Lena Müller</Typography>
+                <Typography color={theme.palette.warning.main} mt={1}>Teststatus: Abgeschlossen</Typography> {/* Farbe angepasst */}
                 <Typography color={theme.palette.warning.main}>Code-Status: Nicht eingelöst</Typography> {/* Farbe angepasst */}
 
                 <Box mt={4} display="flex" flexDirection="column" gap={2}>
@@ -60,7 +60,10 @@ export default function Profil() {
                     <Button variant="contained" sx={btnStyle}>
                         Zertifikat anfordern →
                     </Button>
-                    <Button variant="contained" sx={btnStyle} onClick={() => router.push("/profil/bearbeiten")}>
+                    <Button
+                        variant="contained" sx={btnStyle}
+                        onClick={() => router.push("/profil/bearbeiten")}
+                        >
                         Profil bearbeiten →
                     </Button>
                 </Box>

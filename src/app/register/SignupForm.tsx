@@ -195,7 +195,6 @@ export default function SignupForm({ onNext }: Props) {
             name="strasse"
             fullWidth
             onChange={(e) => handleInputChangeWithIndex(e, index)}
-
             value={adresse.strasse}
           />
           <TextField
@@ -203,7 +202,6 @@ export default function SignupForm({ onNext }: Props) {
             name="plz"
             fullWidth
             onChange={(e) => handleInputChangeWithIndex(e, index)}
-
             value={adresse.plz}
           />
           <TextField
@@ -211,7 +209,6 @@ export default function SignupForm({ onNext }: Props) {
             name="ort"
             fullWidth
             onChange={(e) => handleInputChangeWithIndex(e, index)}
-
             value={adresse.ort}
           />
           <TextField
@@ -219,7 +216,6 @@ export default function SignupForm({ onNext }: Props) {
             name="land"
             fullWidth
             onChange={(e) => handleInputChangeWithIndex(e, index)}
-
             value={adresse.land}
           />
           <Box display="flex" justifyContent="flex-end">
@@ -261,6 +257,13 @@ export default function SignupForm({ onNext }: Props) {
         disabled={loading}
       >
         Weiter
+      </Button>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={() => (window.location.href = "/")}
+      >
+        Abbrechen
       </Button>
     </Box>
   );
