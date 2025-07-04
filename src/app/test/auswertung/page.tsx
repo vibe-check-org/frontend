@@ -14,32 +14,33 @@ import { useQuery } from "@apollo/client";
 import { useSession } from "next-auth/react";
 import getApolloClient from "@/lib/apolloClient";
 import jsPDF from "jspdf";
+import { GET_PUNKTE_BY_IDS, GET_USER_ANTWORTEN } from "../../../graphql/answer/query";
+import { GET_KATEGORIE_BY_FRAGE, GetFragenByFragebogen } from "../../../graphql/questionnaire/query";
 
-import {
-  GET_PUNKTE_BY_IDS,
-  GET_USER_ANTWORTEN,
-} from "../../../graphql/answer/query";
-import {
-  GET_KATEGORIE_BY_FRAGE,
-  GetFragenByFragebogen,
-} from "../../../graphql/questionnaire/query";
 
 export default function AuswertungPage() {
   const searchParams = useSearchParams();
   const fragebogenId = searchParams.get("fragebogenId");
   const userId = searchParams.get("user");
-
   const { data: session } = useSession();
+
   const client = useMemo(
     () => getApolloClient(session?.access_token),
     [session?.access_token]
   );
 
-  const { data: fragenData } = useQuery(GetFragenByFragebogen, {
+  
+
+  const {
+    data: fragen,
+  } = useQuery(GetFragenByFragebogen, {
     client,
-    variables: { id: fragebogenId },
+    variables: { id: fragebogenId},
     skip: !fragebogenId || !userId,
   });
+
+  console.log("Fragen:", fragen?.getFragenByFragebogen);
+
 
   const {
     data: antwortenData,
@@ -53,23 +54,32 @@ export default function AuswertungPage() {
 
   const antworten = antwortenData?.getAnswersByFragebogenAndUser ?? [];
 
-  // Extrahiere und bereinige Antwort-IDs (UUIDs)
-  const antwortIds = useMemo(() => {
+    const antwortIds: string[] = useMemo(() => {
     return antworten
       .flatMap((a) => {
-        if (Array.isArray(a.antwort)) return a.antwort;
-        if (typeof a.antwort === "string") {
-          return a.antwort
-            .replace(/[{}"]/g, "")
-            .split(/[;,]/)
-            .map((id) => id.trim());
+        if (Array.isArray(a.antwort)) {
+          return a.antwort;
         }
+
+        if (typeof a.antwort === "string") {
+          // Entferne Klammern, Anführungszeichen etc.
+          const cleaned = a.antwort.replace(/[{}"]/g, "");
+          return cleaned.split(/[;,]/).map((id) => id.trim());
+        }
+
         return [];
       })
-      .filter((id) => /^[0-9a-fA-F-]{36}$/.test(id));
-  }, [antworten]);
-
-  const frageIds = useMemo(() => antworten.map((a) => a.frageId), [antworten]);
+        .filter((id) => /^[0-9a-fA-F-]{36}$/.test(id)); // Nur echte UUIDs erlauben
+      
+    }, [antworten]);
+  
+  console.log("1. antwortIds: ", antwortIds);
+  
+  
+  const frageIds = useMemo(
+    () => antworten.map((a: any) => a.frageId),
+    [antworten]
+  );
 
   const {
     data: punkteData,
@@ -90,8 +100,9 @@ export default function AuswertungPage() {
     }
   );
 
-  // Kategorienamen nach Kategorie-ID
-  const kategorieNameMap = useMemo(() => {
+  console.log("kategorieData: ", kategorienData);
+
+  const kategorieNameMap: Record<string, string> = useMemo(() => {
     const map: Record<string, string> = {};
     for (const kat of kategorienData?.getKategorienByFrageIds ?? []) {
       map[kat.id] = kat.name;
@@ -99,48 +110,76 @@ export default function AuswertungPage() {
     return map;
   }, [kategorienData]);
 
-  // Punkte pro Antwort-ID
-  const punkteMap = useMemo(() => {
+  const punkteMap: Record<string, number> = useMemo(() => {
     const map: Record<string, number> = {};
     for (const t of punkteData?.getAnswerTemplatesAnwersByIds ?? []) {
+      console.log("punkte: ", t);
       map[t.id] = t.punkte ?? 0;
     }
     return map;
   }, [punkteData]);
 
-  // Zuordnung Frage-ID → Kategorie-ID
-  const frageIdToKategorieId = useMemo(() => {
-    const map: Record<string, string> = {};
-    for (const frage of fragenData?.getFragenByFragebogen ?? []) {
-      if (frage.kategorie?.id) {
-        map[frage.id] = frage.kategorie.id;
-      }
-    }
-    return map;
-  }, [fragenData]);
+  console.log("✅ PunkteMap:", punkteMap);
+  console.log("✅ Antwort-IDs (bereinigt):", antwortIds);
 
-  // Punkte pro Kategorie berechnen
-  const kategorieScores = useMemo(() => {
+
+
+
+  const frageIdToKategorieId: Record<string, string> = useMemo(() => {
+  const map: Record<string, string> = {};
+  for (const frage of fragen?.getFragenByFragebogen ?? []) {
+    if (frage.kategorie?.id) {
+      map[frage.id] = frage.kategorie.id;
+    }
+  }
+  return map;
+}, [fragen]);
+
+  
+  const kategorieScores: Record<string, number> = useMemo(() => {
     const map: Record<string, number> = {};
+
     const bekannteKategorieIds = new Set(
       kategorienData?.getKategorienByFrageIds.map((k) => k.id) ?? []
     );
 
     for (const a of antworten) {
-      const antwortId = Array.isArray(a.antwort) ? a.antwort[0] : a.antwort;
-      const punkte = punkteMap[antwortId] ?? 0;
+
+      console.log("❓ Antwort für Frage:", a.frageId, "→", a.antwort);
+      const rawAntwort = Array.isArray(a.antwort) ? a.antwort[0] : a.antwort;
+
+      const cleanedAntwortId =
+        typeof rawAntwort === "string"
+          ? rawAntwort.replace(/[{}"]/g, "").trim()
+          : "";
+
+      if (!/^[0-9a-fA-F-]{36}$/.test(cleanedAntwortId)) {
+        console.warn("⚠️ Ungültige Antwort-ID übersprungen:", rawAntwort);
+        continue;
+      }
+
+      const punkte = punkteMap[cleanedAntwortId] ?? 0;
+
+      console.log("✅ Antwort in Schleife:", cleanedAntwortId);
 
       const frageKatId = frageIdToKategorieId[a.frageId];
       const kategorieName = kategorieNameMap[frageKatId];
 
+      // ➤ Nur berechnen, wenn die Kategorie im bekannten Set ist
       if (
         !frageKatId ||
         !kategorieName ||
         !bekannteKategorieIds.has(frageKatId)
-      )
+      ) {
+        console.warn("⚠️ Antwort übersprungen:", {
+          frageId: a.frageId,
+          cleanedAntwortId,
+        });
         continue;
+      }
 
-      map[kategorieName] = (map[kategorieName] ?? 0) + punkte;
+      if (!map[kategorieName]) map[kategorieName] = 0;
+      map[kategorieName] += punkte;
     }
 
     return map;
@@ -151,11 +190,13 @@ export default function AuswertungPage() {
     kategorieNameMap,
     kategorienData,
   ]);
+  
+  
+  console.log("kategorieScore: ", kategorieScores);
 
-  const totalScore = useMemo(
-    () => Object.values(kategorieScores).reduce((acc, val) => acc + val, 0),
-    [kategorieScores]
-  );
+  const totalScore = useMemo(() => {
+    return Object.values(kategorieScores).reduce((acc, val) => acc + val, 0);
+  }, [kategorieScores]);
 
   const handlePdfExport = () => {
     const doc = new jsPDF();
@@ -171,7 +212,16 @@ export default function AuswertungPage() {
 
   if (errorAntworten || errorPunkte || kategorieError) {
     const e = errorPunkte || errorAntworten || kategorieError;
-    console.error("❌ Fehler bei GraphQL:", e);
+    console.error("❌ Fehler bei GraphQL:");
+    console.error("➡️ name:", e?.name);
+    console.error("➡️ message:", e?.message);
+    console.error("➡️ graphQLErrors:", e?.graphQLErrors);
+    console.error("➡️ networkError:", e?.networkError);
+    try {
+      console.error("➡️ JSON:", JSON.stringify(e, null, 2));
+    } catch {
+      console.error("⚠️ Fehler beim Serialisieren von error.");
+    }
   }
 
   return (

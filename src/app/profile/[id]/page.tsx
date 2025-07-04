@@ -48,6 +48,7 @@ export default function Profil() {
     console.error("❌ Fehler beim Ausführen der UpdateUser-Mutation:");
     console.error("➡️ Variables:", id);
     console.error("➡️ ApolloError:", error);
+    console.error('user: ', user)
     if (error?.graphQLErrors) {
       console.error("➡️ graphQLErrors:", error.graphQLErrors);
     }
@@ -61,7 +62,8 @@ export default function Profil() {
     return (
       <Box p={4} textAlign="center">
         <Typography color="error">
-          Fehler beim Laden des Profils oder Benutzer nicht gefunden.
+          Fehler beim Laden des Profils oder Benutzer nicht gefunden.{" "}
+          {JSON.stringify(error, null, 2)}
         </Typography>
       </Box>
     );
@@ -96,7 +98,7 @@ export default function Profil() {
         <Button
           variant="contained"
           sx={btnStyle}
-          onClick={() => router.push(`/einleitung?id=${user.id}`)}
+          onClick={() => router.push(`/test_einleitung`)}
         >
           Test Starten →
         </Button>
